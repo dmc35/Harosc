@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13771" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="gTV-IL-0wX" customClass="DetailCollectionCell" customModule="MyApp" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="299" height="182"/>
+            <autoresizingMask key="autoresizingMask"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="299" height="182"/>
+                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                <subviews>
+                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rqi-1y-VlI">
+                        <rect key="frame" x="0.0" y="0.0" width="299" height="182"/>
+                    </imageView>
+                    <view alpha="0.59999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NDh-pV-e6q" customClass="GradientView" customModule="MyApp" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="299" height="182"/>
+                        <userDefinedRuntimeAttributes>
+                            <userDefinedRuntimeAttribute type="color" keyPath="startColor">
+                                <color key="value" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </userDefinedRuntimeAttribute>
+                            <userDefinedRuntimeAttribute type="color" keyPath="endColor">
+                                <color key="value" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
+                            </userDefinedRuntimeAttribute>
+                        </userDefinedRuntimeAttributes>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstAttribute="trailing" secondItem="rqi-1y-VlI" secondAttribute="trailing" id="1Zb-df-m1D"/>
+                <constraint firstItem="NDh-pV-e6q" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="49P-N0-NyW"/>
+                <constraint firstItem="rqi-1y-VlI" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="8if-tO-07x"/>
+                <constraint firstAttribute="trailing" secondItem="NDh-pV-e6q" secondAttribute="trailing" id="DlY-p5-pYC"/>
+                <constraint firstAttribute="bottom" secondItem="rqi-1y-VlI" secondAttribute="bottom" id="enZ-lJ-dyf"/>
+                <constraint firstItem="rqi-1y-VlI" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="lMe-JL-H9Z"/>
+                <constraint firstAttribute="bottom" secondItem="NDh-pV-e6q" secondAttribute="bottom" id="pb7-j6-xW0"/>
+                <constraint firstItem="NDh-pV-e6q" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="tpS-G0-EN3"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
+            <size key="customSize" width="299" height="182"/>
+            <connections>
+                <outlet property="headerImageView" destination="rqi-1y-VlI" id="yGh-9f-DtD"/>
+            </connections>
+            <point key="canvasLocation" x="-4.5" y="-39"/>
+        </collectionViewCell>
+    </objects>
+</document>
