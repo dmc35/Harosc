@@ -9,6 +9,7 @@
 import UIKit
 import MVVM
 import SwiftUtils
+import Alamofire
 
 final class ProfileEditViewController: BaseController {
 
@@ -30,9 +31,15 @@ final class ProfileEditViewController: BaseController {
         configTableView()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        viewModel.getUser()
+    }
+
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         view.endEditing(true)
     }
+
     // MARK: - Private
     private func configView() {
         title = viewModel.title
@@ -66,17 +73,30 @@ final class ProfileEditViewController: BaseController {
         self.present(imagePickerController, animated: true, completion: nil)
     }
 
+    @IBAction func nameTextFieldEditingChanged(_ sender: UITextField) {
+        if let text = nameTextField.text {
+            viewModel.fieldEditingChanged(text: text)
+        }
+    }
+
     @IBAction func saveChangesTouchUpInside(_ sender: UIButton) {
-        Hud.show()
-        viewModel.uploadAvatar { [weak self](result) in
-            Hud.dismiss()
-            guard let this = self else { return }
-            switch result {
-            case .success:
-                break
-            case .failure:
-                this.alert(title: App.String.kError, msg: App.String.kUpdateError, buttons: [App.String.kOk], handler: nil)
+        view.endEditing(true)
+        let validate = viewModel.checkValidate()
+        switch validate {
+        case .success:
+            Hud.show()
+            viewModel.updateProfile { [weak self](result) in
+                Hud.dismiss()
+                guard let this = self else { return }
+                switch result {
+                case .success:
+                    this.viewModel.isEditingChanged = false
+                case .failure(let msg):
+                    this.alert(msg: msg)
+                }
             }
+        case .failure(let msg):
+            alert(msg: msg)
         }
     }
 }
@@ -98,6 +118,7 @@ extension ProfileEditViewController: UITableViewDataSource {
             let cell = tableView.dequeue(ProfileEditFieldCell.self)
             cell.viewModel = viewModel.viewModelForItem(at: indexPath) as? ProfileEditFieldCellViewModel
             cell.selectionStyle = UITableViewCellSelectionStyle.none
+            cell.delegate = self
             return cell
         case .button:
             let cell = tableView.dequeue(ProfileEditButtonCell.self)
@@ -115,7 +136,7 @@ extension ProfileEditViewController: UIImagePickerControllerDelegate, UINavigati
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: JSObject) {
         let image = info[UIImagePickerControllerOriginalImage] as? UIImage
         avatarImageView.image = image
-        viewModel.image = image
+        viewModel.avatarChanged(imageChoose: image)
         picker.dismiss(animated: true, completion: nil)
     }
 }
@@ -124,9 +145,10 @@ extension ProfileEditViewController: ProfileEditFieldCellDelegate {
     func editFieldCell(_ view: ProfileEditFieldCell, needsPerformAction action: ProfileEditFieldCell.Action, fieldType: ProfileEditViewModel.FieldType) {
         switch action {
         case .endEdit(let text):
-            print(text ?? "")
+            guard let text = text else { return }
+            viewModel.fieldEditingChanged(fieldType: fieldType, text: text)
         case .cancel:
-            view.endEditing(true)
+            break
         }
     }
 }

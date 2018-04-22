@@ -13,6 +13,7 @@ import RealmSwift
 @objcMembers final class Datas: Object, Mappable {
     var id = 0
     var thumImage = ""
+    var idBranches = 0
     var long = 0.0
     var lat = 0.0
     var address = ""
@@ -26,6 +27,7 @@ import RealmSwift
     func mapping(map: Map) {
         id <- map[App.String.id]
         thumImage <- map[App.String.thumImage]
+        idBranches <- map[App.String.idBranches]
         long <- map[App.String.long]
         lat <- map[App.String.lat]
         address <- map[App.String.address]

@@ -30,6 +30,7 @@ final class MapViewController: BaseController {
         mapView.delegate = self
         AppDelegate.shared.configLocationService()
         mapView.showsUserLocation = true
+        mapView.removeOverlays(mapView.overlays)
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -62,8 +63,8 @@ final class MapViewController: BaseController {
             switch result {
             case .success:
                 Hud.dismiss()
-            case .failure:
-                this.alert(title: App.String.kError, msg: App.String.kLoadError, buttons: [App.String.kOk], handler: nil)
+            case .failure(let msg):
+                this.alert(msg: msg)
             }
         }
     }
@@ -77,7 +78,9 @@ final class MapViewController: BaseController {
         mapView.removeOverlays(mapView.overlays)
         mapView.removeAnnotations(mapView.annotations)
         guard let center = viewModel.center else { return }
-        let region = MKCoordinateRegionMakeWithDistance(center, (CLLocationDistance(2 * viewModel.radius + 200)), CLLocationDistance(2 * viewModel.radius + 200))
+        let region = MKCoordinateRegionMakeWithDistance(center,
+                                                        CLLocationDistance(2 * viewModel.radius + 200),
+                                                        CLLocationDistance(2 * viewModel.radius + 200))
         let overlayCircle = MKCircle(center: center, radius: CLLocationDistance(viewModel.radius))
         mapView.setRegion(region, animated: true)
         mapView.add(overlayCircle)
@@ -89,6 +92,15 @@ final class MapViewController: BaseController {
         vc.viewModel.id = id
         sideMenuController?.leftViewController = nil
         navigationController?.pushViewController(vc, animated: true)
+    }
+
+    private func showTinderView() {
+        let tinderView: MapBranchView = MapBranchView.loadNib()
+        tinderView.frame = view.bounds
+        tinderView.viewModel = viewModel.viewModelForItem()
+        view.addSubview(tinderView)
+        tinderView.delegate = self
+        navigationItem.rightBarButtonItem?.isEnabled = false
     }
 
     // MARK: - IBActions
@@ -135,6 +147,7 @@ final class MapViewController: BaseController {
 
     @IBAction func regionDidChange(_ sender: UIButton) {
         mapView(mapView, didUpdate: mapView.userLocation)
+        updateLocation()
     }
 
     // MARK: - objc Private
@@ -152,7 +165,9 @@ final class MapViewController: BaseController {
 extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, didUpdate userLocation: MKUserLocation) {
         viewModel.center = userLocation.coordinate
-        updateLocation()
+        if mapView.overlays.isEmpty {
+            updateLocation()
+        }
     }
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -181,7 +196,8 @@ extension MapViewController: MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         guard let annotation = view.annotation as? PinAnnotation else { return }
         let id = annotation.id
-        pushToDetailView(id: id)
+        viewModel.getListBranch(id: id)
+        showTinderView()
     }
 
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
@@ -200,5 +216,17 @@ extension MapViewController: MKMapViewDelegate {
             return circleRenderer
         }
         return MKOverlayRenderer()
+    }
+}
+
+// MARK: - MapBranchView Delegate
+extension MapViewController: MapBranchViewDelegate {
+    func mapBranch(_ view: MapBranchView, needsPerformAction action: MapBranchView.Action) {
+        switch action {
+        case .remove:
+            navigationItem.rightBarButtonItem?.isEnabled = true
+        case .push(let id):
+            pushToDetailView(id: id)
+        }
     }
 }

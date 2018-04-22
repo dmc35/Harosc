@@ -33,7 +33,7 @@ final class LoginViewModel: MVVM.ViewModel {
 
     enum LoginResult {
         case success
-        case failure
+        case failure(String)
     }
 
     let title = App.String.kLogin
@@ -70,7 +70,7 @@ final class LoginViewModel: MVVM.ViewModel {
                 }
                 completion(.success)
             case .failure:
-                completion(.failure)
+                completion(.failure(App.String.kLoginError))
             }
         }
     }

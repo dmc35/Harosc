@@ -12,13 +12,9 @@ import RealmSwift
 final class HomeViewModel: MVVM.ViewModel {
 
     // MARK: - Properties
-    private struct Config {
-        static let heightCell: CGFloat = 237.5
-    }
-
     enum HomeResult {
         case success
-        case failure
+        case failure(String)
     }
 
     var isLoading = false
@@ -40,10 +36,6 @@ final class HomeViewModel: MVVM.ViewModel {
         return HomeCollectionCellViewModel(data: data)
     }
 
-    func sizeForItemAt(_ collectionView: UICollectionView) -> CGSize {
-        return CGSize(width: (collectionView.frame.size.width - 10) / 2, height: Config.heightCell)
-    }
-
     // MARK: - processHome
     func getListPromotion(completion: @escaping (HomeResult) -> Void) {
         let params = Api.Promotion.PromotionParams(limit: limit, page: currentPage)
@@ -57,9 +49,9 @@ final class HomeViewModel: MVVM.ViewModel {
                     completion(.success)
                     return
                 }
-                completion(.failure)
+                completion(.failure(App.String.kLoadError))
             case .failure:
-                completion(.failure)
+                completion(.failure(App.String.kLoadError))
             }
         }
     }
@@ -67,7 +59,7 @@ final class HomeViewModel: MVVM.ViewModel {
     func loadMoreData(completion: @escaping (HomeResult) -> Void) {
         currentPage += 1
         if currentPage > totalPage {
-            completion(.failure)
+            completion(.failure(""))
             return
         } else {
             let params = Api.Promotion.PromotionParams(limit: limit, page: currentPage)
@@ -77,16 +69,16 @@ final class HomeViewModel: MVVM.ViewModel {
                 case .success(let value):
                     if let value = value as? Promotion {
                         guard !value.datas.isEmpty else {
-                            completion(.failure)
+                            completion(.failure(""))
                             return
                         }
                         this.datas.append(contentsOf: Array(value.datas))
                         completion(.success)
                         return
                     }
-                    completion(.failure)
+                    completion(.failure(""))
                 case .failure:
-                    completion(.failure)
+                    completion(.failure(""))
                 }
             }
         }
@@ -105,9 +97,9 @@ final class HomeViewModel: MVVM.ViewModel {
                     completion(.success)
                     return
                 }
-                completion(.failure)
+                completion(.failure(""))
             case .failure:
-                completion(.failure)
+                completion(.failure(""))
             }
         }
     }

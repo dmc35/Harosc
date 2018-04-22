@@ -22,7 +22,7 @@ extension ApiManager {
         }
 
         let encoding: ParameterEncoding
-        if method == .post {
+        if method == .post || method == .patch {
             encoding = JSONEncoding.default
         } else {
             encoding = URLEncoding.default

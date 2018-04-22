@@ -12,13 +12,9 @@ import RealmSwift
 final class ProfileViewModel: MVVM.ViewModel {
 
     // MARK: - Properties
-    struct Config {
-        static let heightCell: CGFloat = 237.5
-    }
-
     enum FavoriteResult {
         case success
-        case failure
+        case failure(String)
     }
 
     enum AlertRemove {
@@ -55,10 +51,6 @@ final class ProfileViewModel: MVVM.ViewModel {
         return ProfileCollectionCellViewModel(itemFavorite)
     }
 
-    func sizeForItemAt(_ collectionView: UICollectionView, indexPath: IndexPath) -> CGSize {
-        return CGSize(width: (collectionView.frame.size.width - 10) / 2, height: Config.heightCell)
-    }
-
     // MARK: - processProfile
     func getListFavorite(_ completion: @escaping (FavoriteResult) -> Void) {
         Api.Favorite.listFavorite { [weak self](result) in
@@ -70,9 +62,9 @@ final class ProfileViewModel: MVVM.ViewModel {
                     completion(.success)
                     return
                 }
-                completion(.failure)
+                completion(.failure(App.String.kLoadError))
             case .failure:
-                completion(.failure)
+                completion(.failure(App.String.kLoadError))
             }
         }
     }
@@ -85,7 +77,7 @@ final class ProfileViewModel: MVVM.ViewModel {
                 this.listFavorites.removeAll()
                 completion(.success)
             case .failure:
-                completion(.failure)
+                completion(.failure(App.String.kDeleteError))
             }
         }
     }
@@ -101,7 +93,7 @@ final class ProfileViewModel: MVVM.ViewModel {
                 }
                 completion(.success)
             case .failure:
-                completion(.failure)
+                completion(.failure(App.String.kDeleteError))
             }
         }
     }

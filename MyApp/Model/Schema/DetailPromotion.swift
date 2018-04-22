@@ -22,6 +22,7 @@ final class DetailPromotion: Object, Mappable {
     var thumImage = ""
     var images = List<Thumbnail>()
     var menuImages = List<Thumbnail>()
+    var comments = List<Comment>()
 
     required convenience init?(map: Map) {
         self.init()
@@ -38,6 +39,7 @@ final class DetailPromotion: Object, Mappable {
         title <- map[App.String.title]
         code <- map[App.String.code]
         thumImage <- map[App.String.thumImage]
+        comments <- map[App.String.comments]
     }
 
     override static func primaryKey() -> String? {

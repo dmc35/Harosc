@@ -54,6 +54,8 @@ extension App {
         static let DetailCollectionCell = "DetailCollectionCell"
         static let DetailContentCell = "DetailContentCell"
         static let DetailMapCell = "DetailMapCell"
+        static let DetailImageCell = "DetailImageCell"
+        static let DetailCommentCell = "DetailCommentCell"
         static let ProfileCollectionCell = "ProfileCollectionCell"
         static let FooterCollection = "FooterCollection"
 
@@ -76,6 +78,7 @@ extension App {
 
         // Promotion
         static let thumImage = "thum_image"
+        static let idBranches = "applying_branches.0.id"
         static let long = "applying_branches.0.long"
         static let lat = "applying_branches.0.lat"
         static let address = "applying_branches.0.address"
@@ -84,12 +87,18 @@ extension App {
         static let page = "page"
         static let limit = "limit"
         static let promotionId = "promotion_id"
+        static let comments = "comments"
+        static let promotionId2 = "promotionId"
 
         // Promotion Detail
         static let url = "url"
         static let images = "images"
         static let menuImages = "menu_images"
         static let content = "content"
+        static let date = "date"
+        static let userAvatarUrl = "user.avatarUrl"
+        static let userId = "user.id"
+        static let userName = "user.name"
 
         // Map
         static let PinAnnotation = "PinAnnotation"
@@ -110,7 +119,6 @@ extension App {
         static let kHome = "Trang chủ"
         static let kMap = "Bản đồ"
         static let kProfile = "Thông tin tài khoản"
-        static let kCompare = "So sánh giá"
         static let kLogin = "Đăng nhập"
         static let kDetail = "Chi tiết khuyến mãi"
         static let kEditProfile = "Cập nhật thông tin"
@@ -121,17 +129,23 @@ extension App {
         // Alert
         static let kError = "Lỗi"
         static let kOk = "Đồng ý"
-        static let kRegisterError = "Đăng ký thất bại!"
-        static let kLoginError = "Đăng nhập thất bại!"
-        static let kNoftiEmail = "Kiểm tra hộp thư đến để lấy mã xác nhận!"
+        static let kRegisterError = "Đăng ký thất bại"
+        static let kLoginError = "Đăng nhập thất bại"
         static let kNofti = "Thông báo"
-        static let kLoadError = "Tải dữ liệu thất bại!"
-        static let kDeleteError = "Xoá dữ liệu thất bại!"
-        static let kAddError = "Thêm dữ liệu thất bại!"
-        static let kEmpty = "Thông tin chưa đầy đủ!"
-        static let kPassword = "Nhập lại mật khẩu!"
-        static let kEmailError = "Sai định dạng Email!"
-        static let kUpdateError = "Cập nhật thông tin thất bại!"
+        static let kLoadError = "Tải dữ liệu thất bại"
+        static let kDeleteError = "Xoá dữ liệu thất bại"
+        static let kAddError = "Thêm dữ liệu thất bại"
+        static let kSendCommentError = "Đăng comment thất bại"
+        static let kCommentEmpty = "Không có bình luận"
+        static let kCommentError = "Không phải bình luận của bạn"
+        static let kCommentFail = "Xoá bình luận thất bại"
+        static let kEmpty = "Thông tin không được để trống"
+        static let kPassword = "Nhập mật khẩu"
+        static let kConfirm = "Nhập lại mật khẩu"
+        static let kEmailError = "Sai định dạng Email"
+        static let kUpdateError = "Cập nhật thông tin thất bại"
+        static let kUpdateSuccess = "Cập nhật thông tin thành công"
+        static let kUpdateEmpty = "Không có thông tin thay đổi"
 
         static let error = "ERROR".localized()
         static let ok = "OK".localized()

@@ -102,7 +102,7 @@ extension Api.User {
         parameters[App.String.birthday] = params.birthday
         parameters[App.String.gender] = params.gender
 
-        return api.request(method: .put, urlString: path, parameters: parameters) { (result) in
+        return api.request(method: .patch, urlString: path, parameters: parameters) { (result) in
             Mapper<User>().map(result: result, type: .object, completion: { (result) in
                 DispatchQueue.main.async {
                     completion(result)
@@ -145,5 +145,48 @@ extension Api.User {
         } else {
             completion(.failure(Api.Error.requestError))
         }
+    }
+}
+
+extension Api.User {
+    struct CommentParams {
+        let id: Int
+        let content: String
+    }
+
+    @discardableResult
+    static func sendComment(params: CommentParams, completion: @escaping Completion) -> Request? {
+        let path = Api.Path.User.SendComment()
+        var parameters: JSObject = [:]
+        parameters[App.String.promotionId2] = params.id
+        parameters[App.String.content] = params.content
+
+        return api.request(method: .post, urlString: path, parameters: parameters) { (result) in
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }
+    }
+
+    @discardableResult
+    static func deleteComment(params: CommentParams, completion: @escaping Completion) -> Request? {
+        let path = Api.Path.User.UpdateComment(id: params.id)
+        return api.request(method: .delete, urlString: path, completion: { (result) in
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        })
+    }
+
+    @discardableResult
+    static func fixComment(params: CommentParams, completion: @escaping Completion) -> Request? {
+        let path = Api.Path.User.UpdateComment(id: params.id)
+        var parameters: JSObject = [:]
+        parameters[App.String.content] = params.content
+        return api.request(method: .patch, urlString: path, parameters: parameters, completion: { (result) in
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        })
     }
 }

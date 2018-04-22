@@ -14,6 +14,10 @@ extension UIViewController {
         alert(title: "ERROR", msg: error.localizedDescription, buttons: ["OK"], handler: nil)
     }
 
+    func alert(msg: String) {
+        alert(title: "Lỗi", msg: msg, buttons: ["Đồng ý"], handler: nil)
+    }
+
     func alert(title: String? = nil, msg: String, buttons: [String], handler: ((UIAlertAction) -> Void)?) {
         let alert = UIAlertController(title: title, message: msg, preferredStyle: .alert)
         for button in buttons {

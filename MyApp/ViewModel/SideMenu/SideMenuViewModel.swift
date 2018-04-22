@@ -16,14 +16,13 @@ final class SideMenuViewModel: MVVM.ViewModel {
     // MARK: - Properties
     enum SideMenuResult {
         case success
-        case failure
+        case failure(String)
     }
 
     enum Menu {
         case home
         case map
         case profile
-        case compare
 
         var title: String {
             switch self {
@@ -33,13 +32,11 @@ final class SideMenuViewModel: MVVM.ViewModel {
                 return App.String.kMap
             case .profile:
                 return App.String.kProfile
-            case .compare:
-                return App.String.kCompare
             }
         }
     }
 
-    let menus: [Menu] = [.home, .map, .compare, .profile]
+    let menus: [Menu] = [.home, .map, .profile]
     var token: NotificationToken?
 
     weak var delegate: ViewModelDelegate?
@@ -67,7 +64,7 @@ final class SideMenuViewModel: MVVM.ViewModel {
             case .success:
                 completion(.success)
             case .failure:
-                completion(.failure)
+                completion(.failure(App.String.kLoadError))
             }
         }
     }

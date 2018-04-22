@@ -7,6 +7,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -15,6 +16,7 @@
             <connections>
                 <outlet property="codeLabel" destination="LeM-ot-nTA" id="YCX-9g-9hZ"/>
                 <outlet property="codeView" destination="yAG-zX-m6L" id="2n8-nX-xpi"/>
+                <outlet property="commentTextView" destination="L6W-qs-9vV" id="t2D-g0-0IC"/>
                 <outlet property="detailCollectionView" destination="Uph-6k-1bd" id="z3b-Zy-klx"/>
                 <outlet property="detailTableView" destination="xdv-g8-Iiu" id="1Sa-iy-6T9"/>
                 <outlet property="pageControl" destination="Ive-ZB-3fy" id="Sfy-da-0t8"/>
@@ -26,7 +28,7 @@
             <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="xdv-g8-Iiu">
+                <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="xdv-g8-Iiu" customClass="TPKeyboardAvoidingTableView">
                     <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     <color key="sectionIndexBackgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.93333333330000001" alpha="1" colorSpace="calibratedRGB"/>
@@ -81,9 +83,56 @@
                         </constraints>
                     </view>
                     <view key="tableFooterView" contentMode="scaleToFill" id="0K2-4M-q0f" userLabel="Footer">
-                        <rect key="frame" x="0.0" y="1028" width="320" height="10"/>
+                        <rect key="frame" x="0.0" y="1028" width="320" height="75"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="L6W-qs-9vV">
+                                <rect key="frame" x="10" y="5" width="245" height="60"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="0.199973762" green="0.2000150383" blue="0.19997116919999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cwb-uK-rsU">
+                                <rect key="frame" x="260" y="5" width="50" height="30"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="50" id="3j4-Rl-OBr"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                <state key="normal" title="Đăng">
+                                    <color key="titleColor" red="0.49803921569999998" green="0.72941176470000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="sendCommentTouchUpInside:" destination="-1" eventType="touchUpInside" id="AG8-EL-dpS"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1Nl-6c-9vE">
+                                <rect key="frame" x="260" y="35" width="50" height="30"/>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="0.49638805650684931" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                <state key="normal" title="Huỷ">
+                                    <color key="titleColor" red="1" green="0.0" blue="0.0" alpha="0.74510380990000002" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="cancelTouchUpInside:" destination="-1" eventType="touchUpInside" id="1Od-jU-DPI"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.93333333330000001" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstItem="cwb-uK-rsU" firstAttribute="height" secondItem="L6W-qs-9vV" secondAttribute="height" multiplier="1/2" id="4ER-5j-xJ5"/>
+                            <constraint firstItem="1Nl-6c-9vE" firstAttribute="leading" secondItem="L6W-qs-9vV" secondAttribute="trailing" constant="5" id="CI3-RQ-JiG"/>
+                            <constraint firstItem="cwb-uK-rsU" firstAttribute="top" secondItem="0K2-4M-q0f" secondAttribute="top" constant="5" id="EP0-WX-etQ"/>
+                            <constraint firstItem="L6W-qs-9vV" firstAttribute="leading" secondItem="0K2-4M-q0f" secondAttribute="leading" constant="10" id="LrZ-Gx-dRa"/>
+                            <constraint firstAttribute="bottom" secondItem="1Nl-6c-9vE" secondAttribute="bottom" constant="10" id="QzV-Ie-dDg"/>
+                            <constraint firstAttribute="bottom" secondItem="L6W-qs-9vV" secondAttribute="bottom" constant="10" id="UiK-h9-Vh2"/>
+                            <constraint firstAttribute="trailing" secondItem="1Nl-6c-9vE" secondAttribute="trailing" constant="10" id="bVA-wd-N92"/>
+                            <constraint firstItem="1Nl-6c-9vE" firstAttribute="height" secondItem="L6W-qs-9vV" secondAttribute="height" multiplier="1/2" id="bgF-vB-5Sm"/>
+                            <constraint firstAttribute="trailing" secondItem="cwb-uK-rsU" secondAttribute="trailing" constant="10" id="fd7-tw-7nN"/>
+                            <constraint firstItem="L6W-qs-9vV" firstAttribute="top" secondItem="0K2-4M-q0f" secondAttribute="top" constant="5" id="uSN-WT-UxM"/>
+                            <constraint firstItem="cwb-uK-rsU" firstAttribute="leading" secondItem="L6W-qs-9vV" secondAttribute="trailing" constant="5" id="vei-Kf-MZL"/>
+                        </constraints>
                     </view>
                 </tableView>
             </subviews>

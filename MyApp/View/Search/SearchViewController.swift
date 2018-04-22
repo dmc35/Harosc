@@ -9,6 +9,10 @@
 import UIKit
 import MVVM
 
+private struct Config {
+    static let heightCell: CGFloat = 237.5
+}
+
 final class SearchViewController: UIViewController, MVVM.View {
 
     // MARK: - IBOutlets
@@ -138,7 +142,7 @@ extension SearchViewController: UICollectionViewDataSource {
 // MARK: - UICollectionView DelegateFlowLayout
 extension SearchViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return viewModel.sizeForItemAt(collectionView)
+        return CGSize(width: (collectionView.frame.size.width - 10) / 2, height: Config.heightCell)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {

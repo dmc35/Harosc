@@ -60,8 +60,8 @@ final class SideMenuViewController: UIViewController, MVVM.View {
             switch result {
             case .success:
                 break
-            case .failure:
-                this.alert(title: App.String.kError, msg: App.String.kLoadError, buttons: [App.String.kOk], handler: nil)
+            case .failure(let msg):
+                this.alert(msg: msg)
             }
         }
     }
@@ -138,8 +138,6 @@ extension SideMenuViewController: UITableViewDelegate {
         case .map:
             vc = mapVC
         case .profile:
-            vc = profileVC
-        case .compare:
             vc = profileVC
         }
         changeViewSideMenu(vc: vc)

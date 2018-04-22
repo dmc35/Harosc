@@ -12,10 +12,6 @@ import Alamofire
 final class SearchViewModel: MVVM.ViewModel {
 
     // MAR: - Properties
-    private struct Config {
-        static let heightCell: CGFloat = 237.5
-    }
-
     enum SearchResult: Int {
         case success
         case empty
@@ -35,10 +31,6 @@ final class SearchViewModel: MVVM.ViewModel {
     func viewModelForItem(at indexPath: IndexPath) -> ViewModel {
         let data = datas[indexPath.row]
         return HomeCollectionCellViewModel(data: data)
-    }
-
-    func sizeForItemAt(_ collectionView: UICollectionView) -> CGSize {
-        return CGSize(width: (collectionView.frame.size.width - 10) / 2, height: Config.heightCell)
     }
 
     // MARK: - processSearch

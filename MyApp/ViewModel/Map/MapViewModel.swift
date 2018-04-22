@@ -15,20 +15,21 @@ final class MapViewModel: MVVM.ViewModel {
     // MARK: - Properties
     enum MapResult {
         case success
-        case failure
+        case failure(String)
     }
 
     var annotations: [PinAnnotation] = []
     let title = App.String.kMap
     var radius: Float = 1_000
     var datas: [Datas] = []
+    var datasBranch: [Datas] = []
     var limit = 200
     var currentPage = 0
     var center: CLLocationCoordinate2D?
 
     weak var delegate: ViewModelDelegate?
 
-    // MARK: - Public
+    // MARK: - Public func
     func getAnnotation() {
         annotations = []
         for i in 0..<datas.count {
@@ -46,6 +47,22 @@ final class MapViewModel: MVVM.ViewModel {
         }
     }
 
+    func getListBranch(id: Int) {
+        datasBranch = []
+        var index = 0
+        for (key, value) in datas.enumerated() where value.id == id {
+            index = key
+            break
+        }
+        for value in datas where value.idBranches == datas[index].idBranches {
+            datasBranch.append(value)
+        }
+    }
+
+    func viewModelForItem() -> MapBranchViewModel {
+        return MapBranchViewModel(datas: datasBranch)
+    }
+
     // MARK: - processMap
     func getListPromotion(completion: @escaping (MapResult) -> Void) {
         let params = Api.Promotion.PromotionParams(limit: limit, page: currentPage)
@@ -58,9 +75,9 @@ final class MapViewModel: MVVM.ViewModel {
                     completion(.success)
                     return
                 }
-                completion(.failure)
+                completion(.failure(App.String.kLoadError))
             case .failure:
-                completion(.failure)
+                completion(.failure(App.String.kLoadError))
             }
         }
     }

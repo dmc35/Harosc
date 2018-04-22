@@ -83,7 +83,24 @@ extension Api.Path.User {
         static var path: String { return pathUser / "avatar" }
 
         var urlString: String {
-            return Update.path
+            return Avatar.path
+        }
+    }
+
+    struct SendComment: ApiPath {
+        static var path: String { return pathUser / "comments" }
+
+        var urlString: String {
+            return SendComment.path
+        }
+    }
+
+    struct UpdateComment: ApiPath {
+        static var path: String { return pathUser / "comments" }
+
+        let id: Int
+        var urlString: String {
+            return UpdateComment.path / id
         }
     }
 }

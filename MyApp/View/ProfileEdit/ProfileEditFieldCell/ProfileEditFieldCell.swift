@@ -46,7 +46,7 @@ final class ProfileEditFieldCell: UITableViewCell, MVVM.View {
     override func awakeFromNib() {
         super.awakeFromNib()
         configDatePickerView()
-        configPickerView()
+        configGenderView()
     }
 
     func updateView() {
@@ -84,8 +84,13 @@ final class ProfileEditFieldCell: UITableViewCell, MVVM.View {
         datePicker.addTarget(self, action: #selector (valueDateChange), for: .valueChanged)
     }
 
-    private func configPickerView() {
+    private func configGenderView() {
+        genderView.delegate = self
         genderView.frame = CGRect(x: 0, y: 0, width: Config.width, height: Config.heightPicker)
+    }
+
+    @IBAction func fieldCellEditingChanged(_ sender: UITextField) {
+        delegate?.editFieldCell(self, needsPerformAction: .endEdit(text: fieldCellTextField.text), fieldType: .phone)
     }
 
     // MARK: - objc Private
@@ -94,40 +99,23 @@ final class ProfileEditFieldCell: UITableViewCell, MVVM.View {
         dateFormatter.dateFormat = App.String.dateFormat
         let text = dateFormatter.string(from: datePicker.date)
         fieldCellTextField.text = text
+        delegate?.editFieldCell(self, needsPerformAction: .endEdit(text: fieldCellTextField.text), fieldType: .birthDay)
     }
 }
 
-// MARK: - UIPickerView DataSource
-extension ProfileEditFieldCell: UIPickerViewDataSource {
-    public func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-
-    public func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        guard let viewModel = viewModel else { fatalError() }
-        return viewModel.numberOfRowsInComponent(component)
-    }
-}
-
-// MARK: - UIPickerView Delegate
-extension ProfileEditFieldCell: UIPickerViewDelegate {
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        guard let viewModel = viewModel else { return }
-        let text = viewModel.pickDataRow(row)
-        fieldCellTextField.text = text
-    }
-
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        guard let viewModel = viewModel else { fatalError() }
-        return viewModel.pickDataRow(row)
-    }
-
-    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
-        guard let viewModel = viewModel else { fatalError() }
-        let titleRow = viewModel.pickDataRow(row)
-        let attributes: [NSAttributedStringKey: Any] = [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 14),
-            NSAttributedStringKey.foregroundColor: App.Color.mainColor]
-        return NSAttributedString(string: titleRow, attributes: attributes)
+// MARK: - GenderView Delegate
+extension ProfileEditFieldCell: GenderViewDelegate {
+    func genderView(_ view: GenderView, needsPerformGender gender: GenderViewModel.Gender) {
+        switch gender {
+        case .male:
+            fieldCellTextField.text = gender.title
+        case .female:
+            fieldCellTextField.text = gender.title
+        case .none:
+            break
+        }
+        fieldCellTextField.resignFirstResponder()
+        delegate?.editFieldCell(self, needsPerformAction: .endEdit(text: fieldCellTextField.text), fieldType: .gender)
     }
 }
 

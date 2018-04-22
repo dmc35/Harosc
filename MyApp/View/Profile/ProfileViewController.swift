@@ -9,6 +9,10 @@
 import UIKit
 import MVVM
 
+private struct Config {
+    static let heightCell: CGFloat = 237.5
+}
+
 final class ProfileViewController: BaseController {
 
     // MARK: - IBOutlets
@@ -47,8 +51,8 @@ final class ProfileViewController: BaseController {
             switch result {
             case .success:
                 this.profileCollectionView.reloadData()
-            case .failure:
-                this.alert(title: App.String.kError, msg: App.String.kLoadError, buttons: [App.String.kOk], handler: nil)
+            case .failure(let msg):
+                this.alert(msg: msg)
             }
         }
     }
@@ -91,8 +95,8 @@ final class ProfileViewController: BaseController {
                 switch result {
                 case .success:
                     this.profileCollectionView.reloadData()
-                case .failure:
-                    this.alert(title: App.String.kError, msg: App.String.kDeleteError, buttons: [App.String.kOk], handler: nil)
+                case .failure(let msg):
+                    this.alert(msg: msg)
                 }
             }
         })
@@ -118,8 +122,8 @@ final class ProfileViewController: BaseController {
                 switch result {
                 case .success:
                     this.profileCollectionView.reloadData()
-                case .failure:
-                    this.alert(title: App.String.kError, msg: App.String.kDeleteError, buttons: [App.String.kOk], handler: nil)
+                case .failure(let msg):
+                    this.alert(msg: msg)
                 }
             }
         })
@@ -162,7 +166,7 @@ extension ProfileViewController: UICollectionViewDataSource {
 // MARK: - UIColletionView Delegate FlowLayout
 extension ProfileViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return viewModel.sizeForItemAt(collectionView, indexPath: indexPath)
+        return CGSize(width: (collectionView.frame.size.width - 10) / 2, height: Config.heightCell)
     }
 }
 

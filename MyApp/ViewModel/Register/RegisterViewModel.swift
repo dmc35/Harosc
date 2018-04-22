@@ -8,8 +8,6 @@
 
 import MVVM
 
-var verifyNumber: Int?
-
 final class RegisterViewModel: MVVM.ViewModel {
 
     // MARK: - Properties
@@ -18,7 +16,6 @@ final class RegisterViewModel: MVVM.ViewModel {
         case email
         case password
         case confirm
-        case verify
     }
 
     enum Validation: CustomStringConvertible {
@@ -37,7 +34,7 @@ final class RegisterViewModel: MVVM.ViewModel {
 
     enum RegisterResult {
         case success
-        case failure
+        case failure(String)
     }
 
     var name = ""
@@ -53,11 +50,11 @@ final class RegisterViewModel: MVVM.ViewModel {
         guard !email.isEmpty else {
             return .failure(field: .email, msg: App.String.kEmpty)
         }
-        guard !(password.count < 5 && password.count > 20) else {
-            return .failure(field: .email, msg: App.String.kPassword)
+        guard !(password.count < 5 || password.count > 20) else {
+            return .failure(field: .password, msg: App.String.kPassword)
         }
         guard !(confirm != password) else {
-            return .failure(field: .email, msg: App.String.kPassword)
+            return .failure(field: .confirm, msg: App.String.kConfirm)
         }
         guard email.validate(String.Regex.Email1) else {
             return .failure(field: .email, msg: App.String.kEmailError)
@@ -80,7 +77,7 @@ final class RegisterViewModel: MVVM.ViewModel {
             case .success:
                 completion(.success)
             case .failure:
-                completion(.failure)
+                completion(.failure(App.String.kRegisterError))
             }
         }
     }
@@ -95,7 +92,7 @@ final class RegisterViewModel: MVVM.ViewModel {
                 }
                 completion(.success)
             case .failure:
-                completion(.failure)
+                completion(.failure(App.String.kLoginError))
             }
         }
     }

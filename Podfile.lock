@@ -3,15 +3,19 @@ PODS:
   - AlamofireNetworkActivityIndicator (2.1.0):
     - Alamofire (~> 4.1)
   - Kingfisher (4.6.3)
+  - Koloda (4.3.1):
+    - pop (~> 1.0)
   - LGSideMenuController (2.1.1)
   - MVVM-Swift (1.1.0)
   - ObjectMapper (3.1.0)
+  - pop (1.0.10)
   - Realm (3.1.1):
     - Realm/Headers (= 3.1.1)
   - Realm/Headers (3.1.1)
   - RealmSwift (3.1.1):
     - Realm (= 3.1.1)
   - SAMKeychain (1.5.2)
+  - SKPhotoBrowser (5.0.5)
   - SVProgressHUD (2.2.2)
   - SwiftLint (0.25.0)
   - SwiftUtils (4.0.1)
@@ -21,11 +25,13 @@ DEPENDENCIES:
   - Alamofire
   - AlamofireNetworkActivityIndicator (~> 2.1.0)
   - Kingfisher (~> 4.6.3)
+  - Koloda (~> 4.3.1)
   - LGSideMenuController
   - MVVM-Swift (~> 1.1.0)
   - ObjectMapper
   - RealmSwift
   - SAMKeychain (~> 1.5.2)
+  - SKPhotoBrowser (~> 5.0)
   - SVProgressHUD (~> 2.2.2)
   - SwiftLint (~> 0.25.0)
   - SwiftUtils (~> 4.0.1)
@@ -35,17 +41,20 @@ SPEC CHECKSUMS:
   Alamofire: 856a113053a7bc9cbe5d6367a555d773fc5cfef7
   AlamofireNetworkActivityIndicator: 4716f6554bdfb9c7cf13b1e0e3af21163129690a
   Kingfisher: 98e6d5b5e807645743e8ed5ececd25d688d38452
+  Koloda: 0d39b2aa188ccd1fac48d752acaf9802e683c625
   LGSideMenuController: ae40c80983ab8b8801c7cef0a6804d43aaa72d45
   MVVM-Swift: 54749cc12bb30af41632f30a2c576a18bf9e4bc8
   ObjectMapper: 20505058f54e5c3ca69e1d6de9897d152a5369a6
+  pop: 82ca6b068ce9278fd350fd9dd09482a0ce9492e6
   Realm: 42d1c38a5b1bbcc828b48a7ce702cb86fc68adf4
   RealmSwift: d31937ca6a6ee54acde64ec839523c0a3c04924b
   SAMKeychain: 1865333198217411f35327e8da61b43de79b635b
+  SKPhotoBrowser: 5969c3813727f11fe37bea74a40425cafcb32f61
   SVProgressHUD: 59b2d3dabacbd051576d21d32293ca7228dc18b0
   SwiftLint: e14651157288e9e01d6e1a71db7014fb5744a8ea
   SwiftUtils: b009d391fb2e285392f114238f8b55d2750b80f0
   TPKeyboardAvoiding: cb69d5ddbe90ce0170e4bc2db1e5e41d4a3ad9a4
 
-PODFILE CHECKSUM: 2cf1a4add15261ffdf8fe37f13227bd2da0ca658
+PODFILE CHECKSUM: b00ed336456b2587cab3e84353f2c34819d9fe01
 
 COCOAPODS: 1.4.0

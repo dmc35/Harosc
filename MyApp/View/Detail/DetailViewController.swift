@@ -8,6 +8,11 @@
 
 import UIKit
 import MVVM
+import SKPhotoBrowser
+
+private struct Config {
+    static let mapWidth = UIScreen.main.bounds.width
+}
 
 final class DetailViewController: BaseController {
 
@@ -17,6 +22,7 @@ final class DetailViewController: BaseController {
     @IBOutlet fileprivate weak var pageControl: UIPageControl!
     @IBOutlet fileprivate weak var codeView: UIView!
     @IBOutlet fileprivate weak var codeLabel: UILabel!
+    @IBOutlet fileprivate weak var commentTextView: UITextView!
 
     // MARK: - Properties
     var viewModel = DetailViewModel()
@@ -43,9 +49,17 @@ final class DetailViewController: BaseController {
             guard let this = self else { return }
             switch result {
             case .success:
-                this.updateView()
-            case .failure:
-                this.alert(title: App.String.kError, msg: App.String.kLoadError, buttons: [App.String.kOk], handler: nil)
+                this.viewModel.getListFavorite({ (result) in
+                    switch result {
+                    case .success:
+                        this.updateView()
+                        this.configRightBarButton()
+                    case .failure(let msg):
+                        this.alert(msg: msg)
+                    }
+                })
+            case .failure(let msg):
+                this.alert(msg: msg)
             }
         }
     }
@@ -72,6 +86,9 @@ final class DetailViewController: BaseController {
     private func configTableView() {
         detailTableView.register(UINib(nibName: App.String.DetailContentCell, bundle: nil), forCellReuseIdentifier: App.String.DetailContentCell)
         detailTableView.register(UINib(nibName: App.String.DetailMapCell, bundle: nil), forCellReuseIdentifier: App.String.DetailMapCell)
+        detailTableView.register(UINib(nibName: App.String.DetailImageCell, bundle: nil), forCellReuseIdentifier: App.String.DetailImageCell)
+        detailTableView.register(UINib(nibName: App.String.DetailCommentCell, bundle: nil), forCellReuseIdentifier: App.String.DetailCommentCell)
+
         detailTableView.dataSource = self
         detailTableView.delegate = self
     }
@@ -82,8 +99,8 @@ final class DetailViewController: BaseController {
             switch result {
             case .success:
                 this.configRightBarButton()
-            case .failure:
-                this.alert(title: App.String.kError, msg: App.String.kLoadError, buttons: [App.String.kOk], handler: nil)
+            case .failure(let msg):
+                this.alert(msg: msg)
             }
         }
     }
@@ -97,11 +114,24 @@ final class DetailViewController: BaseController {
         }
     }
 
+    private func showSKPhoto(photos: [SKPhoto]) {
+        let photoBrowser = SKPhotoBrowser(photos: photos)
+        present(photoBrowser, animated: true, completion: nil)
+    }
+
     private func updateView() {
         navigationItem.rightBarButtonItem?.tintColor = App.Color.extraColor
         codeLabel.text = viewModel.detailPromotion.code
         detailCollectionView.reloadData()
         detailTableView.reloadData()
+    }
+
+    private func hiddenCommentView() {
+        for row in 0..<viewModel.comments.count {
+            let indexPath = IndexPath(row: row, section: 1)
+            guard let cell = detailTableView.cellForRow(at: indexPath) as? DetailCommentCell else { return }
+            cell.hiddenCommentView()
+        }
     }
 
     // MARK: - objc Private
@@ -120,8 +150,8 @@ final class DetailViewController: BaseController {
                 case .success:
                     this.viewModel.isFavorite = true
                     this.navigationItem.rightBarButtonItem?.tintColor = App.Color.mainColor
-                case .failure:
-                    this.alert(title: App.String.kError, msg: App.String.kAddError, buttons: [App.String.kOk], handler: nil)
+                case .failure(let msg):
+                    this.alert(msg: msg)
                 }
             }
         } else {
@@ -132,8 +162,8 @@ final class DetailViewController: BaseController {
                 case .success:
                     this.viewModel.isFavorite = false
                     this.navigationItem.rightBarButtonItem?.tintColor = App.Color.extraColor
-                case .failure:
-                    this.alert(title: App.String.kError, msg: App.String.kDeleteError, buttons: [App.String.kOk], handler: nil)
+                case .failure(let msg):
+                    this.alert(msg: msg)
                 }
             }
         }
@@ -147,6 +177,41 @@ final class DetailViewController: BaseController {
         } else {
             detailCollectionView.scrollRectToVisible(CGRect(x: contentOffset.x + cellSize.width, y: contentOffset.y, width: cellSize.width, height: cellSize.height), animated: true)
         }
+    }
+
+    // MARK: - IBActions
+    @IBAction func sendCommentTouchUpInside(_ sender: UIButton) {
+        commentTextView.resignFirstResponder()
+        viewModel.contentText = commentTextView.text
+        Hud.show()
+        viewModel.sendComment { [weak self](result) in
+            guard let this = self else { return }
+            switch result {
+            case .success:
+                this.viewModel.getDataDetail({ (result) in
+                    switch result {
+                    case .success:
+                        this.commentTextView.text = ""
+                        this.alert(title: "Thành công", msg: "Bình luận thành công", buttons: [App.String.kOk], handler: nil)
+                        this.updateView()
+                    case .failure(let msg):
+                        this.alert(msg: msg)
+                    }
+                })
+            case .failure(let msg):
+                this.alert(msg: msg)
+                this.commentTextView.becomeFirstResponder()
+            }
+            Hud.dismiss()
+        }
+    }
+
+    @IBAction func cancelTouchUpInside(_ sender: UIButton) {
+        hiddenCommentView()
+        commentTextView.text = ""
+        commentTextView.resignFirstResponder()
+        viewModel.contentText = ""
+        viewModel.isUpgrade = false
     }
 }
 
@@ -172,27 +237,47 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return viewModel.sizeForItemAt(collectionView)
+        return CGSize(width: collectionView.frame.width, height: collectionView.frame.height)
     }
 }
 
 // MARK: - UITableView DataSource
 extension DetailViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return viewModel.numberOfSections()
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return viewModel.numberOfItems(inSection: section, viewType: .table)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let rowType = viewModel.rows[indexPath.row]
-        switch rowType {
-        case .content:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: App.String.DetailContentCell, for: indexPath) as? DetailContentCell else { fatalError(App.String.ErrorCell) }
-            cell.viewModel = viewModel.viewModelForItem(at: indexPath, viewType: .table) as? DetailContentCellViewModel
-            cell.selectionStyle = .none
-            return cell
-        case .map:
-            guard let cell = tableView.dequeueReusableCell(withIdentifier: App.String.DetailMapCell, for: indexPath) as? DetailMapCell else { fatalError(App.String.ErrorCell) }
-            cell.viewModel = viewModel.viewModelForItem(at: indexPath, viewType: .table) as? DetailMapCellViewModel
+        let sectionType = viewModel.sections[indexPath.section]
+        switch sectionType {
+        case .other:
+            let rowType = viewModel.rows[indexPath.row]
+            switch rowType {
+            case .content:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: App.String.DetailContentCell, for: indexPath) as? DetailContentCell else { fatalError(App.String.ErrorCell) }
+                cell.viewModel = viewModel.viewModelForItem(at: indexPath, viewType: .table) as? DetailContentCellViewModel
+                cell.selectionStyle = .none
+                return cell
+            case .image:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: App.String.DetailImageCell, for: indexPath) as? DetailImageCell else { fatalError(App.String.ErrorCell) }
+                cell.viewModel = viewModel.viewModelForItem(at: indexPath, viewType: .table) as? DetailImageCellViewModel
+                cell.selectionStyle = .none
+                cell.delegate = self
+                return cell
+            case .map:
+                guard let cell = tableView.dequeueReusableCell(withIdentifier: App.String.DetailMapCell, for: indexPath) as? DetailMapCell else { fatalError(App.String.ErrorCell) }
+                cell.viewModel = viewModel.viewModelForItem(at: indexPath, viewType: .table) as? DetailMapCellViewModel
+                cell.selectionStyle = .none
+                return cell
+            }
+        case .comment:
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: App.String.DetailCommentCell, for: indexPath) as? DetailCommentCell else { fatalError(App.String.ErrorCell) }
+            cell.viewModel = viewModel.viewModelForItem(at: indexPath, viewType: .table) as? DetailCommentCellViewModel
+            cell.delegate = self
             cell.selectionStyle = .none
             return cell
         }
@@ -201,7 +286,76 @@ extension DetailViewController: UITableViewDataSource {
 
 // MARK: - UITableView Delegate
 extension DetailViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        hiddenCommentView()
+    }
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return viewModel.heightForRowAt(indexPath: indexPath)
+        let sectionType = viewModel.sections[indexPath.section]
+        switch sectionType {
+        case .other:
+            let rowType = viewModel.rows[indexPath.row]
+            switch rowType {
+            case .map:
+                return 2 * Config.mapWidth / 3
+            default:
+                return UITableViewAutomaticDimension
+            }
+        case .comment:
+            return UITableViewAutomaticDimension
+        }
+    }
+}
+
+// MARK: - DetailImageCell Delegate
+extension DetailViewController: DetailImageCellDelegate {
+    func detailImage(_ view: DetailImageCell, needsPerformType type: DetailImageCell.ImageType) {
+        switch type {
+        case .launch:
+            let photos = viewModel.getPhotoBrowser(type: .launch)
+            showSKPhoto(photos: photos)
+        case .menu:
+            let photos = viewModel.getPhotoBrowser(type: .menu)
+            showSKPhoto(photos: photos)
+        }
+    }
+}
+
+// MARK: - DetailCommentCell Delegate
+extension DetailViewController: DetailCommentCellDelegate {
+    func editComment(_ view: DetailCommentCell, needsPerformAction action: DetailCommentCell.Action) {
+        switch action {
+        case .fix(let id, let userId):
+            viewModel.checkComment(id: id, userId: userId, completion: { [weak self](result) in
+                guard let this = self else { return }
+                switch result {
+                case .success:
+                    this.commentTextView.text = this.viewModel.contentText
+                    this.commentTextView.becomeFirstResponder()
+                case .failure(let msg):
+                    this.alert(msg: msg)
+                }
+            })
+        case .delete(let id, let userId):
+            Hud.show()
+            viewModel.deleteComment(commentId: id, userId: userId, { [weak self](result) in
+                guard let this = self else { return }
+                switch result {
+                case .success:
+                    this.viewModel.getDataDetail({ (result) in
+                        switch result {
+                        case .success:
+                            this.alert(title: "Thành công", msg: "Xoá bình luận thành công", buttons: [App.String.kOk], handler: nil)
+                            this.updateView()
+                        case .failure(let msg):
+                            this.alert(msg: msg)
+                        }
+                    })
+                case .failure(let msg):
+                    this.alert(msg: msg)
+                }
+            })
+            Hud.dismiss()
+        }
     }
 }

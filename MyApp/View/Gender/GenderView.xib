@@ -40,6 +40,9 @@
                             <state key="normal" title="Nam">
                                 <color key="titleColor" red="0.49803921569999998" green="0.72941176470000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
+                            <connections>
+                                <action selector="maleTouchUpInside:" destination="iN0-l3-epB" eventType="touchUpInside" id="1Ar-yB-MxQ"/>
+                            </connections>
                         </button>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8cp-7W-aPn" userLabel="Line">
                             <rect key="frame" x="0.0" y="91" width="355" height="0.5"/>
@@ -57,6 +60,9 @@
                             <state key="normal" title="Nữ">
                                 <color key="titleColor" red="0.49803921569999998" green="0.72941176470000002" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                             </state>
+                            <connections>
+                                <action selector="femaleTouchUpInside:" destination="iN0-l3-epB" eventType="touchUpInside" id="Y06-ch-Qv2"/>
+                            </connections>
                         </button>
                     </subviews>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -89,6 +95,9 @@
                     <state key="normal" title="Hủy bỏ">
                         <color key="titleColor" red="1" green="0.0" blue="0.0" alpha="0.74510380990000002" colorSpace="calibratedRGB"/>
                     </state>
+                    <connections>
+                        <action selector="cancelTouchUpInside:" destination="iN0-l3-epB" eventType="touchUpInside" id="ZUA-1g-jO8"/>
+                    </connections>
                 </button>
             </subviews>
             <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="0.93333333330000001" alpha="1" colorSpace="calibratedRGB"/>

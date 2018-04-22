@@ -42,6 +42,8 @@ target 'MyApp' do
     pod 'TPKeyboardAvoiding', '~> 1.3.2'
     #    pod 'IQKeyboardManagerSwift', '~> 5.0.7'
     pod 'LGSideMenuController'
+    pod 'SKPhotoBrowser', '~> 5.0'
+    pod 'Koloda', '~> 4.3.1'
 
     target 'MyAppTests' do
         inherit! :complete

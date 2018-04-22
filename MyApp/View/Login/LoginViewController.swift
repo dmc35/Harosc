@@ -73,7 +73,6 @@ final class LoginViewController: BaseController {
     // MARK: - IBActions
     @IBAction func signInButtonTouchUpInside(_ sender: UIButton?) {
         viewModel.trimString(emailTextField.string, passwordTextField.string)
-
         let validate = viewModel.checkValidate()
         switch validate {
         case .success:
@@ -82,9 +81,9 @@ final class LoginViewController: BaseController {
                 switch result {
                 case .success:
                     AppDelegate.shared.changeRootView(vc: .home)
-                case .failure:
+                case .failure(let msg):
                     this.changeFrame(y: Config.frameChange)
-                    this.alert(title: App.String.kError, msg: App.String.kLoginError, buttons: [App.String.kOk], handler: nil)
+                    this.alert(msg: msg)
                 }
             })
         case .failure(field: let field, msg: let msg):
